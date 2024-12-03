@@ -14,7 +14,6 @@ select(82,585)mul(693,510)%$what()from()mul(740,749){~'<]mul(281,263)when()(!?>/
 t_data = "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
 
 # Solution 1 using re
-
 do = True
 pattern = r"mul\(\d+,\d+\)|do\(\)|don't\(\)"
 matches = re.findall(pattern, data)
