@@ -1430,23 +1430,41 @@ for line in rules.strip().split("\n"):
 
 updates_arr = [list(map(int, line.split(","))) for line in updates.strip().split("\n")]
 
-sum_middles = 0
-
-for j in range(len(updates_arr)):
+invalid_idxs = []
+for i in range(len(updates_arr)):
     
-    update = updates_arr[j]
+    update = updates_arr[i]
     visited = []
-    valid = True
 
-    for i in range(len(update)):
+    for j in range(len(update)):
    
-        if any(e in visited for e in rules_dict.get(update[i], [])):
-            valid = False
+        if any(e in visited for e in rules_dict.get(update[j], [])):
+            invalid_idxs.append(i)
             break
 
-        visited.append(update[i])
- 
-    if valid: 
-        sum_middles += update[len(update) // 2]
+        visited.append(update[j])
 
-print(sum_middles)
+# Rules são o dict
+def bubble_sort_rules(arr, rules):
+    n = len(arr)
+    for i in range(n):
+        swapped = False
+
+        for j in range(0, n-i-1):
+            if arr[j] in rules.get(arr[j+1], []):
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+                swapped = True
+        
+        if not swapped:
+            break
+
+middle_sum = 0
+for k in range(len(invalid_idxs)):
+    inv_update = updates_arr[invalid_idxs[k]]
+
+    bubble_sort_rules(inv_update, rules_dict)
+    middle_sum += inv_update[len(inv_update) // 2]
+
+print(middle_sum)
+
+
