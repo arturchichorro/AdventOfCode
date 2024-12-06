@@ -143,7 +143,20 @@ t_data = """
 ......#...
 """
 
-matrix = [list(line) for line in data.strip().split("\n")]
+t_data_2 = """
+....#.....
+.....#...#
+..........
+..#.......
+.......#..
+..........
+.#..^.....
+........#.
+#.........
+......#...
+"""
+
+matrix = [list(line) for line in t_data_2.strip().split("\n")]
 
 directions = [[-1,0], [0,1], [1,0], [0,-1]]
 
@@ -188,10 +201,18 @@ assign_matrix(matrix, pos, "X")
 dir_idx = 0
 while within_bounds(pos) and within_bounds(sum_arr(pos, directions[dir_idx])):
     
+    print_matrix(matrix)
+    print("--")
+
     next_pos = sum_arr(pos, directions[dir_idx])
     if within_bounds(next_pos) and read_matrix(matrix, next_pos) == "#":
         dir_idx = (dir_idx + 1) % 4
+
+        while read_matrix(matrix, sum_arr(pos, directions[dir_idx])) == "#":
+            dir_idx = (dir_idx + 1) % 4
+
         pos = sum_arr(pos, directions[dir_idx])
+
     else:
         pos = next_pos[:]
     
