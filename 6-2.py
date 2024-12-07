@@ -319,9 +319,7 @@ count = 0
 
 for i in range(rows):
     for j in range(cols):
-        
-        print([i,j])
-
+    
         matrix = [list(line) for line in data.strip().split("\n")]
         pos = find_start(matrix)
         assign_matrix(matrix, pos, "X")
