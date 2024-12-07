@@ -1,3 +1,6 @@
+import time
+start_time = time.time()
+
 data="""644197722674: 5 9 46 99 1 5 9 2 22 6 74
 3424919: 67 51 7 561 358
 7160145: 9 9 7 4 8 3 91 2 3 3 5 731
@@ -863,6 +866,8 @@ t_data = """
 equations = [[int(x) for x in line.replace(":", "").split()] for line in data.strip().split("\n")]
 
 def dfs(eq, curr, idx, operation):
+    # if curr > eq[0]:
+    #     return False
     if idx == len(eq):
          return curr == eq[0]
     
@@ -879,3 +884,7 @@ for equation in equations:
         t_sum += equation[0]
 
 print(t_sum)
+
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(f"Elapsed time: {elapsed_time} seconds")
