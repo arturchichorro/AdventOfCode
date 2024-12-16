@@ -1,6 +1,5 @@
 import re
-
-t0_data = """p=2,4 v=2,-3"""
+import time
 
 t_data = """p=0,4 v=3,-3
 p=6,3 v=-1,-3
@@ -516,59 +515,83 @@ p=81,12 v=-81,-31
 p=19,13 v=-96,-50
 p=42,26 v=57,-55"""
 
-def parse_input(input):
-    return [tuple(int(value) for value in match) for match in re.findall(r"p=(-?\d+),(-?\d+)\s+v=(-?\d+),(-?\d+)", input)]
+def parse_input(input_data):
+    return [tuple(int(value) for value in match) 
+            for match in re.findall(r"p=(-?\d+),(-?\d+)\s+v=(-?\d+),(-?\d+)", input_data)]
 
-def move_robots(rows, cols, input, n):
-    posvel = parse_input(input)
+def update_positions(data, rows, cols):
+    for i, (x, y, vx, vy) in enumerate(data):
+        new_x = (x + vx) % cols
+        new_y = (y + vy) % rows
+        data[i] = (new_x, new_y, vx, vy)
+    return data
 
-    result = []
+def calculate_safety_factor(data, rows, cols):
+    midr, midc = rows // 2, cols // 2
+    q1 = q2 = q3 = q4 = 0
 
-    for pv in posvel:
-        x, y, vx, vy = pv
-        result.append(((x+vx * n) % cols, (y+vy * n) % rows))
-    
-    return result
-
-def calc_safety_factor(rows, cols, input, n):
-
-    positions = move_robots(rows, cols, input, n)
-
-    q1, q2, q3, q4 = 0, 0, 0, 0
-
-    midr = rows // 2
-    midc = cols // 2
-
-    for pos in positions:
-        c, r = pos
-
-        if c < midc and r < midr:
+    for x, y, _, _ in data:
+        if x < midc and y < midr:
             q1 += 1
-        elif c > midc and r < midr:
+        elif x >= midc and y < midr:
             q2 += 1
-        elif c < midc and r > midr:
+        elif x < midc and y >= midr:
             q3 += 1
-        elif c > midc and r > midr:
+        elif x >= midc and y >= midr:
             q4 += 1
+
+    return q1 * q2 * q3 * q4
+
+def print_grid(data, rows, cols, step, safety_factor):
+    grid = [["." for _ in range(cols)] for _ in range(rows)]
+    
+    for x, y, vx, vy in data:
+        grid[y][x] = "#"
+    
+    print(f"Step: {step}, Safety Factor: {safety_factor}")
+    
+    for row in grid:
+        print("".join(row))
+    print("\n" + "=" * cols + "\n")
+
+def simulate(data, rows, cols, max_steps=None):
+    step = 0
+    safety_factors = []
+
+    while max_steps is None or step < max_steps:
+        safety_factor = calculate_safety_factor(data, rows, cols)
+        safety_factors.append((safety_factor, step))
         
-    print(q1, q2, q3, q4)
-    return q1*q2*q3*q4
-            
-print(calc_safety_factor(103, 101, t_data, 7))
+        # print_grid(data, rows, cols, step, safety_factor)
+        
+        data = update_positions(data, rows, cols)
+        
+        step += 1
+
+    safety_factors.sort(key=lambda x: x[0], reverse=True)
+    
+    print(safety_factors)
+
+def print_step_n(data, rows, cols, n):
+    for _ in range(n):
+        data = update_positions(data, rows, cols)
+    print_grid(data, rows, cols, n, 0)
+
+objects = parse_input(data)
+copy_objects = parse_input(data)
+
+rows, cols = 103, 101
+
+max_steps = 10000
 
 
+simulate(objects, rows, cols, max_steps)
+print_step_n(copy_objects, rows, cols, 7584)
 
-# def print_positions(input, n):
-#     rows, cols, _ = parse_input(input)
-#     pos = move_robots(input, n)
 
-#     for i in range(rows):
-#         row = ""
-#         for j in range(cols):
-#             if (j, i) in pos:
-#                 row += " X"
-#             else:
-#                 row += " ."
-#         print(row)
+# for _ in range(7500):
+#     objects = update_positions(objects, rows, cols)
 
-# print_positions(t_data, 100)
+# for i in range(100):
+#     objects = update_positions(objects, rows, cols)
+#     print_grid(objects, rows, cols, i, 0)
