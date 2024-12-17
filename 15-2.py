@@ -1,3 +1,5 @@
+from typing import Dict, List, Set
+
 t1_data = """##########
 #..O..O.O#
 #......O.#
@@ -92,96 +94,115 @@ vv><v<^v^^<^<^^^<><^>>^<v>v<<v>^<^>v^>v^v>>^^>>>v^<v<^v><^><^<^v>vv>vv<^^<^>v><<
 <v^^<<>>>><>>v>^<v^v>^v>><^>^v><<<v<<^^v>^^<>>^^v^><v^^^^^^>^^>v^^<v><><<^^v^>^v<<<<v>^><<>v>>vvv<v>^>>v<>v^^v><^<v>^^<v>v^>v^v^^vv<v^<vvv^^^^^^v<<^^vv<v^^>^v>>^^^^^<^v>v<v><><<<vvv>^^<^^v<>>>^>^>v><><vvv^<>v^vv>^^><>v^>^>^^>>vv^>v>v^^>vv<<>^<<v<><<<>><v>>>>^<><^<<<^^v^^^>v<><^<><^<v^^^>^<^^>v<vv<>><v^v>><>>v<^<^>^>v<v<^>>vvv<v<>^^<^v^>v<>><><<<vvv><^^<>^<<>v^>^^><<v^<^^^><><v^>v<<^<><<v>vv<v<^^>>>^><<v<^<<>v<v<<v<<^>><>>><>>^<<v>>v><>v><>^v>^<vvv^^^v^v>v<^^<^v>v><v<>^^>^<<^>vv<>^^><^^<^^v<v<^v>v^vv><vv<^v^>v<v^>><v^^^><<^>>^^v^<^^v^<<<^<^^<^v<vv>^>^>v^^^^>^<<v<<<v<>^<v<v^^><v^^v^<>^>>v<<v<>>>>>>^<^v^>^<vv><^vv<vvv<^<<v<>>v^v<^^^v<^<v<>v<>v><v>^^<<v>^><<<><v>><>v>>><>^<^<^<v>>>><<<v^^^<<<v><v>v^v^vvv>^>^<<>v^<v<^>^>><<>v<>v<v>^^vvv<v>v^v<v<>^>v^v^>>>v>^v>v<<>v><<v^v><v^<^v^>>^<v><v><><<^><v^>^<>^>>^v^v<^^><>^>^v>>vvv<<><><>><>v^>v<vv<>v>><v>v><<<^v>>vvv><^^^>>^v^<v>^^<><v>v^^>v^v^^v^^>^<v^<^^^vvv^vv>^<vv<^v><^^<<>^>><v>>>^><<^v>v<>^v<v^>>^v<^^v^v>v<^><<^<v>^v<<v^<<^>vv<<<v^^><>v^><v^<<
 <<>>v>>vv>>v<^><>^v^^><v<^>v^^<vv^v><vv>^<^vv>^>>^^<<vvvv<v^v^>^^>v<vvv<v^v<^>v>v<<<><vv<<>^^><><>vv>v>>><<vvv^>v<><v<>^v>>^^v>^v>><<<>><<<<<>v^>>^v<>v<><>v<>^<<^vv<>^vv^>v^^<^<<vv^^v>>>>v<^>v>><vv^v<><>vv^>><<><<^^>^^vv^^^v<v<><^^^v>^>><v^^^>v<vvvv<^>><<vvv<<<v^^>vv<<^vv<v<v<<><<^<^^>>v<>>v><>^v>v^^><<v<^^>v<^>vv>v<>>>>>v<<>^v>><v^^vvvvv<v>v<>^vv^^<<>>>>^v>^v>^>^^^v><^^>^^v^>>>><>v^><>^v<<>v^^<^>^><<>>v><v^^v><><>v<^>>>^v<v<>>>v^v>v<v^^^><<vvv>>><>v^v><^<><<<^vv<<>v<^<v>v<><^v<>><v>><<^^v>v><vv^><>>^^<^v<<<^v<<>v<<>^<v>>^vv^><vv>>vv<v<^<<<>^>v><^>^^><^^>>>>v>><^v<vvv^vv>^vvvv>^<<>>>v>^<v^>^<^<v><<^^^^^vv<vv^^^<v^>>vv>>vvv^v>^^^<<vv><^>>^^^>v^v^<^><^<v<^v^^^^v<v>>v>>><^^>^<<><<^><><<v>v<>^^^<><^^<>>vv^<>^<<<<v<v<vv><<><<^v^v^v<>>v><<^^<<><^>>v^v^^vv>^^v^vv<v>>v>^^>^>^^<v<>>^>>^<<^<>v>>vvv<<v<<v<<<<<>^>^v^^^<<vv<<>^><>^v<vv^><^><^><v<>v<><^^<>v^v^v<v^^<<>>><v><><>v>>>><^vv^vv<^<<^<v><<vv<v>>^vvv<^>^^>v<><>>^<vv^^v^><^<v><<>^>^<v^>vv<<^vv^v^<<vv>v><><^v>v^v^>vv>><v>vv>>v<<><v<>^<<>^^^<v^"""
 
-t_data = """########
-#..O.O.#
-##@.O..#
-#...O..#
-#.#.O..#
-#...O..#
-#......#
-########
+Point = Dict[str, int]
 
-<^^>>>vv<v>>v<<"""
-
-def parse_input(input):
-    m, instructions = input.strip().split("\n\n")
-    
-    maze = [[c for c in line] for line in m.strip().split()]
-    
-    return maze, instructions
-
-def print_maze(maze):
-    for row in maze:
-        print("".join(f"{e:3}" for e in row))
-        
-def move_in_maze(maze, dir, x, y):
-    # dir is [1,0], [0,1], [-1, 0] or [0, -1]
-    # x, y is current location
-
-    new_x, new_y = x + dir[0], y + dir[1]
-    if maze[new_x][new_y] == ".":
-        maze[x][y] = "."
-        maze[new_x][new_y] = "@"
-        return maze, new_x, new_y
-    elif maze[new_x][new_y] == "#":
-        return maze, x, y
-  
-    sx, sy = 0, 0
-    while maze[new_x][new_y] == "O":
-        new_x, new_y = new_x + dir[0], new_y + dir[1]
-
-        if maze[new_x][new_y] == "#":
-            return maze, x, y
-        elif maze[new_x][new_y] == ".":
-            sx, sy = new_x, new_y
-
-    while True:
-        prev_x, prev_y = sx - dir[0], sy - dir[1]
-
-        if maze[prev_x][prev_y] == "O":
-            maze[sx][sy] = "O"
-            maze[prev_x][prev_y] = "."
-        elif maze[prev_x][prev_y] == "@":
-            maze[sx][sy] = "@"
-            maze[prev_x][prev_y] = "."
-            break
-        
-        sx, sy = prev_x, prev_y
-    
-    return maze, x + dir[0], y + dir[1]
-
-def calc_gps_coordinates(maze):
-    res = 0
-    for i in range(len(maze)):
-        for j in range(len(maze[0])):
-            if maze[i][j] == "O":
-                res += i*100 + j
-    return res
+DIRECTIONS: Dict[str, Point] = {
+    "^": {"x": 0, "y": -1},
+    ">": {"x": 1, "y": 0},
+    "v": {"x": 0, "y": 1},
+    "<": {"x": -1, "y": 0},
+}
 
 
-def simulate(maze, instructions):
-    x, y = 0, 0
-    found = False
-    for i in range(len(maze)):
-        for j in range(len(maze[0])):
-            if maze[i][j] == "@":
-                x, y = i, j
-                found = True
+def allSumOfGPSCoordinates() -> int:
+
+    parts = [lines.split("\n") for lines in data.strip().split("\n\n")]
+    grid = [list(line) for line in parts[0]]
+    instructions = "".join(parts[1])
+    width, height = len(grid[0]), len(grid)
+
+    walls: Set[str] = set()
+    boxes: List[Point] = []
+    robot = {"x": 0, "y": 0}
+
+    for y in range(height):
+        for x in range(width):
+            if grid[y][x] == "@":
+                robot = {"x": x * 2, "y": y}
+            if grid[y][x] == "#":
+                walls.add(f"{x * 2},{y}")
+                walls.add(f"{x * 2 + 1},{y}")
+            if grid[y][x] == "O":
+                boxes.append({"x": x * 2, "y": y})
+
+    def move_box(
+        collided_box: Point, direction: Point, movements: List[Dict[str, Point]]
+    ) -> bool:
+        next_positions = [
+            {
+                "x": collided_box["x"] + direction["x"],
+                "y": collided_box["y"] + direction["y"],
+            },
+            {
+                "x": collided_box["x"] + 1 + direction["x"],
+                "y": collided_box["y"] + direction["y"],
+            },
+        ]
+
+        for next_pos in next_positions:
+            if f"{next_pos['x']},{next_pos['y']}" in walls:
+                return False
+
+        collided_boxes = [
+            box
+            for box in boxes
+            if any(
+                (box["x"] == collided_box["x"] and box["y"] == collided_box["y"])
+                is False
+                and (
+                    (box["x"] == next_pos["x"] or box["x"] + 1 == next_pos["x"])
+                    and box["y"] == next_pos["y"]
+                )
+                for next_pos in next_positions
+            )
+        ]
+
+        if not collided_boxes:
+            return True
+
+        conflicts = False
+        for box in collided_boxes:
+            if move_box(box, direction, movements):
+                if not any(
+                    b["x"] == box["x"] and b["y"] == box["y"]
+                    for b in [m["box"] for m in movements]
+                ):
+                    movements.append({"box": box, "direction": direction})
+            else:
+                conflicts = True
                 break
-        if found: break
-    
-    for i in instructions:
-        if i == "^":
-            maze, x, y = move_in_maze(maze, [-1, 0], x, y)
-        elif i == ">":
-            maze, x, y = move_in_maze(maze, [0, 1], x, y)
-        elif i == "<":
-            maze, x, y = move_in_maze(maze, [0, -1], x, y)
-        elif i == "v":
-            maze, x, y = move_in_maze(maze, [1, 0], x , y)
 
-    return calc_gps_coordinates(maze)
+        return not conflicts
 
-maze, instructions = parse_input(t_data)
-print(simulate(maze, instructions))
+    for instruction in instructions:
+        direction = DIRECTIONS[instruction]
+        position = {"x": robot["x"] + direction["x"], "y": robot["y"] + direction["y"]}
 
+        if f"{position['x']},{position['y']}" not in walls:
+            collided_box = next(
+                (
+                    box
+                    for box in boxes
+                    if (box["x"] == position["x"] or box["x"] + 1 == position["x"])
+                    and box["y"] == position["y"]
+                ),
+                None,
+            )
+
+            if collided_box is not None:
+                movements: List[Dict[str, Point]] = []
+                if move_box(collided_box, direction, movements):
+                    for movement in movements:
+                        movement["box"]["x"] += movement["direction"]["x"]
+                        movement["box"]["y"] += movement["direction"]["y"]
+                    collided_box["x"] += direction["x"]
+                    collided_box["y"] += direction["y"]
+                    robot = position
+            else:
+                robot = position
+
+    score = sum(box["y"] * 100 + box["x"] for box in boxes)
+    print(score)
+    return score
+
+allSumOfGPSCoordinates()
