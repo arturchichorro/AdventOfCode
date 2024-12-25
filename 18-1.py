@@ -3521,7 +3521,34 @@ def n_steps(input, fell, width, height):
             if 0 <= ny < height and 0 <= nx < width and (x, y) not in corruptions:
                 heapq.heappush(pq, (score + 1, nx, ny))
         
-    return float('inf')
+    return -1
+
+def search(input, width, height):
+    corruptions = parse_input(input)
+    max = len(corruptions)
+
+    start, end = 0, max - 1
+
+    while start < end:
+        mid = (start + end) // 2
+        if n_steps(input, mid, width, height) == -1:
+            end = mid
+        else:
+            start = mid + 1
+    
+    if n_steps(input, start, width, height) == -1:
+        return start, corruptions[start-1]
+    else:
+        return -1, None
 
 
-print(n_steps(data, 1024, 71, 71))
+def brute_search(input, width, height):
+    corruptions = parse_input(input)
+
+    for i in range(len(corruptions)):
+        if n_steps(input, i, width, height) == -1:
+            return i, corruptions[i-1]
+    
+    return -1, None
+
+print(search(data, 71, 71))
