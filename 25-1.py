@@ -4088,8 +4088,5 @@ def solve(locks, keys):
 
     return result
 
-
-
-
 locks, keys = parse_input(data)
 print(solve(locks, keys))
