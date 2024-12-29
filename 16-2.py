@@ -1,6 +1,3 @@
-import heapq
-from collections import defaultdict
-
 t_data = """###############
 #.......#....E#
 #.#.###.#.###.#
