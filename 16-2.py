@@ -177,100 +177,58 @@ data = """######################################################################
 #S..#.........#.........#.....#...#...#...#...#.......#...#.......#.........#...#.............#...............................#...#.........#
 #############################################################################################################################################"""
 
-def parse_input(input):
-    maze = [list(line) for line in input.strip().split("\n")]
-    start, end = None, None
+from heapq import heappop, heappush
 
-    width, height = len(maze[0]), len(maze)
+def part2(puzzle_input):
+    grid = puzzle_input.split('\n')
+    m, n = len(grid), len(grid[0])
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 'S':
+                start = (i, j)
+            elif grid[i][j] == 'E':
+                end = (i, j)
 
-    for y in range(height):
-        for x in range(width):
-            if maze[y][x] == "S":
-                start = (x, y)
-            if maze[y][x] == "E":
-                end = (x, y)
-    
-    return maze, start, end
+    grid[end[0]] = grid[end[0]].replace('E', '.')
 
-def dijkstra(maze, start, end, previous):
-    width, height = len(maze[0]), len(maze)
-    
-    # East, South, West, North
-    directions = [(1,0), (0,1), (-1, 0), (0, -1)]
+    def can_visit(d, i, j, score):
+        prev_score = visited.get((d, i, j))
+        if prev_score and prev_score < score:
+            return False
+        visited[(d, i, j)] = score
+        return True
 
-    # x, y, facing (start facing east (idx 0))
-    current_state = (start[0], start[1], 0)
-
-    # score, current_state, [states]
-    pq = [(0, current_state, [current_state])] 
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    heap = [(0, 0, *start, {start})]
     visited = {}
-
-    while pq:
-        score, current_state, states = heapq.heappop(pq)
-        x, y, facing = current_state
-
-        if (x, y) == end:
-            return score, states
-
-        if (x, y, facing) in visited and visited[(x, y, facing)] <= score:
-            continue
-        visited[(x, y, facing)] = score
-
-        dx, dy = directions[facing]
-        nx, ny = x + dx, y + dy
-
-        if 0 <= ny < height and 0 <= nx < width and maze[ny][nx] != "#":
-            new_states = states + [(nx, ny, facing)]
-            if (nx, ny) == end and states + [(nx, ny, facing)] in previous:
-                heapq.heappush(pq, (score + 1000000, (nx, ny, facing), new_states))
-            else:
-                heapq.heappush(pq, (score + 1, (nx, ny, facing), new_states))
-        
-        left_facing = (facing - 1) % 4
-        new_states = states + [(x, y, left_facing)]
-        heapq.heappush(pq, (score + 1000, (x, y, left_facing), new_states))
-
-        right_facing = (facing + 1) % 4
-        new_states = states + [(x, y, right_facing)]
-        heapq.heappush(pq, (score + 1000, (x, y, right_facing), new_states))
-    
-    return float('inf'), []
-
-
-def print_best_tiles(maze, tile_set):    
-    width, height = len(maze[0]), len(maze)
-
-    for y in range(height):
-        line = ""
-        for x in range(width):
-            if (x, y) in tile_set:
-                line += " O "
-            else:
-                line += f" {maze[y][x]} "
-        print(line)
-
-def simulate(input):
-    maze, start, end = parse_input(input)
-
-    score = 0
-    previous = []
-
-    min_score, states = dijkstra(maze, start, end, [])
-    previous.append(states)
-
-    while score <= min_score:
-        
-        score, states = dijkstra(maze, start, end, previous)
-        if score > min_score:
+    lowest_score = None
+    winning_paths = set()
+    while heap:
+        score, d, i, j, path = heappop(heap)
+        if lowest_score and lowest_score < score:
             break
-        previous.append(states)
-    
-    tile_set = set()
-    for states in previous:
-        for x, y, _ in states:
-            tile_set.add((x, y))
 
-    print_best_tiles(maze, tile_set)
-    print(len(tile_set))
+        if (i, j) == end:
+            lowest_score = score
+            winning_paths |= path
+            continue
 
-simulate(t_data)
+        if not can_visit(d, i, j, score):
+            continue
+
+        x = i + directions[d][0]
+        y = j + directions[d][1]
+        if grid[x][y] == '.' and can_visit(d, x, y, score+1):
+            heappush(heap, (score + 1, d, x, y, path | {(x, y)}))
+
+        left = (d - 1) % 4
+        if can_visit(left, i, j, score + 1000):
+            heappush(heap, (score + 1000, left, i, j, path))
+
+        right = (d + 1) % 4
+        if can_visit(right, i, j, score + 1000):
+            heappush(heap, (score + 1000, right, i, j, path))
+
+    return len(winning_paths)
+
+print(part2(data))
