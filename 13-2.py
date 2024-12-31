@@ -1313,12 +1313,14 @@ def parse_input(input):
 def det_2x2(a, b, c, d):
     return a * d - b * c
 
-def solve_part1(input):
+def solve_part2(input):
     problems = parse_input(input)
 
     tokens = 0
     for prob in problems:
         x1, y1, x2, y2, x_goal, y_goal = prob
+        x_goal += 10000000000000
+        y_goal += 10000000000000
 
         det_A, det_A1, det_A2 = det_2x2(x1, x2, y1, y2), det_2x2(x_goal, x2, y_goal, y2), det_2x2(x1, x_goal, y1, y_goal)
 
@@ -1326,9 +1328,8 @@ def solve_part1(input):
             a = det_A1 // det_A
             b = det_A2 // det_A
 
-            if a < 101 and b < 101:
-                tokens += a*3 + b
+            tokens += a*3 + b
 
     return tokens
 
-print(solve_part1(data))
+print(solve_part2(data))
