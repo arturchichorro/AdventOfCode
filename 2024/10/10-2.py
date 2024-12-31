@@ -3,6 +3,7 @@ with open("input.txt", "r") as file:
 
 with open("example.txt", "r") as file:
     t_data = file.read()
+    
 matrix = [[int(c) for c in line] for line in data.strip().split("\n")]
 
 def find_zeros(m):

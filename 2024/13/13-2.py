@@ -5,8 +5,6 @@ with open("example.txt", "r") as file:
     t_data = file.read()
 
 import re
-from math import gcd
-from fractions import Fraction
 
 def parse_input(input):
     machines = input.strip().split("\n\n")
