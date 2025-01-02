@@ -20,13 +20,13 @@ def bron_kerbosch(R, P, X, adj_list):
         return [R]
     
     cliques = []
-    for v in P.copy():
+    for v in P:
         P_v = P & adj_list[v]
         X_v = X & adj_list[v]
 
         cliques.extend(bron_kerbosch(R | {v}, P_v, X_v, adj_list))
-        P.remove(v)
-        X.add(v)
+        P = P - {v}
+        X = X | {v}
     return cliques
 
 def find_largest_clique(adj_list):
