@@ -24,7 +24,6 @@ def bron_kerbosch(R, P, X, adj_list):
     for v in P:
         P_v = P & adj_list[v]
         X_v = X & adj_list[v]
-
         cliques.extend(bron_kerbosch(R | {v}, P_v, X_v, adj_list))
         P = P - {v}
         X = X | {v}
@@ -35,7 +34,7 @@ def bron_kerbosch_pivot(R, P, X, adj_list):
         return [R]
     
     cliques = []
-    u = max(P | X, key =lambda vertex: len(P &adj_list[vertex]))
+    u = max(P | X, key =lambda vertex: len(P & adj_list[vertex]))
 
     for v in P - adj_list[u]:
         P_v = P & adj_list[v]

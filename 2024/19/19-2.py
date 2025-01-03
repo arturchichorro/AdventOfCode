@@ -9,6 +9,8 @@ def parse_input(input):
 
     towels = [towel.strip() for towel in towels.split(",")]
     goals = goals.strip().split("\n")
+
+    print(len(towels), len(goals), len(goals[0]))
     
     return towels, goals
 
@@ -19,14 +21,13 @@ def dfs(towels, target, index, memo):
     
     if index in memo:
         return memo[index]
-    
+
     ways = 0
     for towel in towels:
-        
         if target.startswith(towel, index):
             ways += dfs(towels, target, index + len(towel), memo)
-    
     memo[index] = ways
+
     return ways
 
 towels, goals = parse_input(data)
