@@ -11,7 +11,7 @@ with open("example.txt", "r") as file:
 # Solution 1 using re
 do = True
 pattern = r"mul\(\d+,\d+\)|do\(\)|don't\(\)"
-matches = re.findall(pattern, data)
+matches = re.findall(pattern, t_data)
 n_pairs = []
 
 for s in matches:
@@ -24,7 +24,8 @@ for s in matches:
     elif do:
         n = s[s.find("(") + 1:s.find(")")]
         n_pairs.append([int(x) for x in n.split(",")])
-    
+
+print(n_pairs)
 print(sum(reduce(lambda x, y: x*y, pair) for pair in n_pairs))
 
 # Solution 2 without using re
