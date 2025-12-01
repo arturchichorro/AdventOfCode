@@ -7,3 +7,4 @@ yarn.lock
 pnpm-lock.yaml
 *.js
 # tsconfig.json
+inputex.txt
