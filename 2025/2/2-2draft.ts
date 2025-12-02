@@ -12,3 +12,6 @@ for (const arr of ranges) for (let i = arr[0]; i <= arr[1]; i++) if (checkRepeti
 
 console.log(fs.readFileSync('input.txt','utf8').split(',').flatMap(r=>{const [a,b]=r.split('-').map(Number);return Array.from({length:b-a+1},(_,i)=>a+i)}).reduce((sum,i)=>{const s=String(i);return sum + ((s+s).slice(1,-1).includes(s) ? i : 0)},0));
 
+const resulty = ranges.forEach((arr) => {
+    
+})
