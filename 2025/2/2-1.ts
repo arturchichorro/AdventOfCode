@@ -1,15 +1,7 @@
 import * as fs from "fs";
 
 const data = fs.readFileSync("input.txt", "utf8");
-// const lines = data.split(/\r?\n/);
-// const input: number[] = [];
-
-
-
-// const ex = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124"
-
-const exArr = data.split(',');
-const ranges = exArr.map((ele) => ele.split('-').map((e) => Number(e)));
+const ranges = data.split(',').map((ele) => ele.split('-').map(Number));
 
 let result = 0;
 for (const arr of ranges) {
