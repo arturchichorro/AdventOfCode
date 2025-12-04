@@ -1,0 +1,34 @@
+import * as fs from "fs";
+
+const data = fs.readFileSync("input.txt", "utf8");
+const lines = data.split(/\r?\n/);
+
+const DIRECTIONS = [
+    [0,1], [1,0], [1,1], [0, -1], 
+    [-1, 0], [-1, -1], [1, -1], [-1, 1]
+];
+const rows = lines.length;
+const cols = lines[0].length;
+
+const inBounds = (row: number, col: number) => row >= 0 && row < rows && col >= 0 && col < cols;
+const check = (row: number, col: number, matrix: String[]) => {
+    if (matrix[row][col] !== "@") return false;
+    let count = 0
+    for (const [a, b] of DIRECTIONS) {
+        if (!inBounds(row + a, col + b)) continue;
+        if (matrix[row + a][col + b] === '@') count +=1;
+        if (count > 3) return false;
+    }
+    return true;
+}
+
+let res=0;
+for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+        if (check(r, c, lines)) {
+            res+=1
+        };
+    }   
+}
+
+console.log(res);
