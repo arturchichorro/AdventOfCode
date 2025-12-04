@@ -12,12 +12,13 @@ const cols = lines[0].length;
 
 const inBounds = (row: number, col: number) => row >= 0 && row < rows && col >= 0 && col < cols;
 
-const check = (row: number, col: number, matrix: String[][]) => {
-    if (matrix[row][col] !== "@") return false;
+const check = (r: number, c: number, matrix: String[][]) => {
+    if (matrix[r][c] !== "@") return false;
     let count = 0
-    for (const [a, b] of DIRECTIONS) {
-        if (!inBounds(row + a, col + b)) continue;
-        if (matrix[row + a][col + b] === '@') count ++;
+    for (const [dr, dc] of DIRECTIONS) {
+        const nr = r + dr, nc = c + dc;
+        if (!inBounds(nr, nc)) continue;
+        if (matrix[nr][nc] === '@') count ++;
         if (count > 3) return false;
     }
     return true;
