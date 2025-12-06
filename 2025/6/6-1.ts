@@ -16,7 +16,6 @@ const res = transposed.reduce((sum, line) => {
     const op = line.pop()!;
     return sum + line.map(Number).reduce(ops[op]);
 }, 0);
-
 console.log(res);
 
 
