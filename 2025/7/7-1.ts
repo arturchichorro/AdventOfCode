@@ -13,23 +13,34 @@ function findS(grid: string[][]) {
 
 const rows = lines.length;
 const cols = lines[0].length;
-const inBounds = (row: number, col: number) => row >= 0 && row < rows && col >= 0 && col < cols;
-const [sr, sc] = findS(lines)!;
+
+const inBounds = (row: number, col: number) => 
+    row >= 0 && row < rows && col >= 0 && col < cols;
+
+const start = findS(lines);
+if (!start) throw new Error ("No S in grid");
+const [sr, sc] = start;
+
 const splits = new Set<string>();
 
-function dfs(grid: string[][], row: number, col: number) {
-    if (grid[row][col] === "^") {
-        if (splits.has(`${row}-${col}`)) return;
-        if (inBounds(row, col - 1)) dfs(grid, row, col - 1);
-        if (inBounds(row, col + 1)) dfs(grid, row, col + 1);
-        splits.add(`${row}-${col}`)
+function dfs(r: number, c: number) {
+    const cell = lines[r][c];
+
+    if (cell === "^") {
+        const key = `${r}-${c}`;
+        if (splits.has(key)) return;
+
+        if (inBounds(r, c - 1)) dfs(r, c - 1);
+        if (inBounds(r, c + 1)) dfs(r, c + 1);
+        
+        splits.add(key);
         return;
-    } else {
-        grid[row][col] = "|";
-        if (inBounds(row + 1, col)) dfs(grid, row + 1, col);
-    }
+    } 
+    
+    if (cell !== "|") lines[r][c] = "|";
+    if (inBounds(r + 1, c)) dfs(r + 1, c);
 }
 
-dfs(lines, sr + 1, sc);
+dfs(sr + 1, sc);
 
 console.log(splits.size);
